@@ -8,8 +8,8 @@ var eStartLocX = -100; //Starting location of enemy on x Axis
 var eStartLocY1 = 57; //Starting location of enemy on y Axis for first line
 var eStartLocY2 = 139; //Starting location of enemy on y Axis for second line
 var eStartLocY3 = 221; //Starting location of enemy on y Axis for third line
-var winCounter = 0;
-var gotKey = false;
+var winCounter = 0;//Keeps track of how many times in a row you've won
+var gotKey = false;//Keeps track of if you have grabbed the key or not
     
 // Enemies our player must avoid 
 var Enemy = function(speed, yCord) {
@@ -82,6 +82,7 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
+//Creates a key object
 var Key = function() {
     this.sprite = 'images/Key.png';
     this.location = {
@@ -100,6 +101,7 @@ Key.prototype.disappear = function() {
     this.location.y = -100;
 };
 
+//Moves key back into view once hit by enemy or game is won
 Key.prototype.reappear = function() {
         this.location.x = 405;
         this.location.y = 139;
@@ -123,8 +125,9 @@ var allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
 //Function that detects collision between enemy or key and player.
 function detectCollision() {
     for (var i = 0; i < allEnemies.length; i++) {
-        //Touch determines if enemy and player are touching
+        //Determines if enemy and player are touching
         var touchE = (((allEnemies[i].location.x - player.location.x < 100) && (allEnemies[i].location.x - player.location.x > -85)) && (allEnemies[i].location.y === player.location.y)); 
+        //Determines if player has touched the key
         var touchK = (player.location.x === goldKey.location.x) && (player.location.y === goldKey.location.y);
 
         if (touchE) {
