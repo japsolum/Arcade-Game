@@ -102,7 +102,7 @@ Key.prototype.disappear = function() {
 
 Key.prototype.reappear = function() {
         this.location.x = 405;
-        this.location.y = 139
+        this.location.y = 139;
 };
 
 //Updates key image
