@@ -12,7 +12,7 @@
  * This engine is available globally via the Engine variable and it also makes
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
- */
+ */ 
 
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
@@ -27,7 +27,7 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+    $(".container").append(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -95,6 +95,7 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        goldKey.update();
     }
 
     /* This function initially draws the "game level", it will then call
@@ -152,6 +153,7 @@ var Engine = (function(global) {
         });
 
         player.render();
+        goldKey.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -171,6 +173,7 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
+        'images/Key.png',
         'images/char-boy.png'
     ]);
     Resources.onReady(init);

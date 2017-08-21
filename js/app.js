@@ -9,8 +9,9 @@ var eStartLocY1 = 57; //Starting location of enemy on y Axis for first line
 var eStartLocY2 = 139; //Starting location of enemy on y Axis for second line
 var eStartLocY3 = 221; //Starting location of enemy on y Axis for third line
 var winCounter = 0;
-
-// Enemies our player must avoid
+var gotKey = false;
+    
+// Enemies our player must avoid 
 var Enemy = function(speed, yCord) {
     this.sprite = 'images/enemy-bug.png';
     this.speed = speed;
@@ -20,7 +21,7 @@ var Enemy = function(speed, yCord) {
     };
 };
 
-// Update the enemy's position, required method for game
+// Update the enemy's position
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
     this.location.x += this.speed * dt;
@@ -29,20 +30,14 @@ Enemy.prototype.update = function(dt) {
     } else {
         ctx.drawImage(Resources.get(this.sprite), this.location.x, this.location.y);
     }
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
 };
 
-// Draw the enemy on the screen, required method for game
+// Draw the enemy on the screen
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.location.x, this.location.y);
 };
 
-
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+// Creates class for player
 var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.location = {
@@ -51,6 +46,7 @@ var Player = function() {
     };
 };
 
+//Draws player on screen
 Player.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.location.x, this.location.y);
 };
@@ -74,7 +70,9 @@ Player.prototype.handleInput = function(key) {
         if ((this.location.y - 82) >= minY) {
             this.location.y -= 82;    
         }else {
-            win();
+            if (gotKey) {
+                win();
+            }
         }
         
     }else if (key === "down") {
@@ -84,9 +82,36 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+var Key = function() {
+    this.sprite = 'images/Key.png';
+    this.location = {
+        "x" : 405,
+        "y" : 139
+    };
+};
+
+Key.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.location.x, this.location.y);
+};
+
+//Moves key off screen once collected so it seems to disappear
+Key.prototype.disappear = function() {
+    this.location.x = -100;
+    this.location.y = -100;
+};
+
+Key.prototype.reappear = function() {
+        this.location.x = 405;
+        this.location.y = 139
+};
+
+//Updates key image
+Key.prototype.update = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.location.x, this.location.y);
+};
+
+// Initiates player, key, and enemies
+var goldKey = new Key();
 var player = new Player();
 var enemy1 = new Enemy(50, eStartLocY1);
 var enemy2 = new Enemy(150, eStartLocY1); 
@@ -95,29 +120,42 @@ var enemy4 = new Enemy(100, eStartLocY2);
 var enemy5 = new Enemy(150, eStartLocY3);
 var allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5];
 
+//Function that detects collision between enemy or key and player.
 function detectCollision() {
-    /* if allenemies loc - player loc < 100 or player loc - enemy loc < 100
-    */
     for (var i = 0; i < allEnemies.length; i++) {
         //Touch determines if enemy and player are touching
-        var touch = (((allEnemies[i].location.x - player.location.x < 100) && (allEnemies[i].location.x - player.location.x > -85)) && (allEnemies[i].location.y === player.location.y)); 
+        var touchE = (((allEnemies[i].location.x - player.location.x < 100) && (allEnemies[i].location.x - player.location.x > -85)) && (allEnemies[i].location.y === player.location.y)); 
+        var touchK = (player.location.x === goldKey.location.x) && (player.location.y === goldKey.location.y);
 
-        if (touch){
+        if (touchE) {
             winCounter = 0;
+            gotKey = false;
+            goldKey.reappear();
+            document.getElementById("noOfWins").innerHTML = winCounter;
             player.location.x = pStartLocX;
             player.location.y = pStartLocY;
         }
-    }
-};
 
+        if (touchK) {
+            goldKey.disappear();
+            gotKey = true;
+        }
+
+
+    }
+}
+
+// Decides what to do when you win the game.
 function win() {
     winCounter += 1;
-    window.alert("You win! You have won " + winCounter + " times without dying!");
+    gotKey = false;
+    goldKey.reappear();
+    document.getElementById("noOfWins").innerHTML = winCounter;
     player.location.x = pStartLocX;
     player.location.y = pStartLocY;
-};
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+}
+// This listens for key presses and sends the keys to the
+// Player.handleInput() method. 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
