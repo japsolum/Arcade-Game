@@ -7,6 +7,7 @@ body {
 	box-shadow: 5px 5px 9px grey;
 	background-color: black;
 	width: 50%;
+	min-width: 525px;
 	padding: 20px;
 	margin: auto;
 }
@@ -20,9 +21,9 @@ body {
 
  .wins {
  	color: white;
- 	padding-bottom: 5px;
  }
 
  #noOfWins {
  	color: red;
  }
+ 
